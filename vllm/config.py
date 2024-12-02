@@ -1005,7 +1005,7 @@ class ParallelConfig:
             ray_found = ray_utils.ray_is_available()
             if (current_platform.is_cuda()
                     and cuda_device_count_stateless() < self.world_size) or (current_platform.is_hpu()
-                    and self.world_size < 8):
+                    and 8 < self.world_size):
                 # Hard-coded at the moment for HPU
                 if not ray_found:
                     raise ValueError("Unable to load Ray which is "
