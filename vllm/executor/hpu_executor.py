@@ -18,7 +18,17 @@ from vllm.worker.worker_base import WorkerWrapperBase
 
 logger = init_logger(__name__)
 
-
+def create_worker(worker_module_name: str, worker_class_name: str,
+                  worker_class_fn: Optional[Callable[[], Type[WorkerBase]]],
+                  **kwargs):
+    wrapper = WorkerWrapperBase(
+        worker_module_name=worker_module_name,
+        worker_class_name=worker_class_name,
+        worker_class_fn=worker_class_fn,
+    )
+    wrapper.init_worker(**kwargs)
+    return wrapper.worker
+    
 class HPUExecutor(ExecutorBase):
 
     uses_ray: bool = False
