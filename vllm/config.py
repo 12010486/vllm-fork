@@ -989,12 +989,12 @@ class ParallelConfig:
                 raise ValueError(
                     "TPU backend only supports Ray for distributed inference.")
 
-        if current_platform.is_hpu() and self.world_size > 1:
-            if self.distributed_executor_backend is None:
-                self.distributed_executor_backend = "ray"
-            if self.distributed_executor_backend != "ray":
-                raise ValueError(
-                    "HPU backend only supports Ray for distributed inference.")
+        #if current_platform.is_hpu() and self.world_size > 1:
+        #    if self.distributed_executor_backend is None:
+        #        self.distributed_executor_backend = "ray"
+        #    if self.distributed_executor_backend != "ray":
+        #        raise ValueError(
+        #            "HPU backend only supports Ray for distributed inference.")
 
         if self.distributed_executor_backend is None and self.world_size > 1:
             # We use multiprocessing by default if world_size fits on the
@@ -1004,7 +1004,9 @@ class ParallelConfig:
             backend = "mp"
             ray_found = ray_utils.ray_is_available()
             if (current_platform.is_cuda()
-                    and cuda_device_count_stateless() < self.world_size):
+                    and cuda_device_count_stateless() < self.world_size) or (current_platform.is_hpu()
+                    and self.world_size < 8):
+                # Hard-coded at the moment for HPU
                 if not ray_found:
                     raise ValueError("Unable to load Ray which is "
                                      "required for multi-node inference, "
