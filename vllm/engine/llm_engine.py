@@ -533,6 +533,13 @@ class LLMEngine:
                 initialize_ray_cluster(engine_config.parallel_config)
                 from vllm.executor.ray_hpu_executor import RayHPUExecutor
                 executor_class = RayHPUExecutor
+            elif distributed_executor_backend == "mp":
+                from vllm.executor.multiproc_hpu_executor import (
+                MultiprocessingHPUExecutor)
+                assert not envs.VLLM_USE_RAY_SPMD_WORKER, (
+                "multiprocessing distributed executor backend does not "
+                "support VLLM_USE_RAY_SPMD_WORKER=1")
+                executor_class = MultiprocessingHPUExecutor
             else:
                 from vllm.executor.hpu_executor import HPUExecutor
                 executor_class = HPUExecutor
