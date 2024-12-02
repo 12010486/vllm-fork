@@ -5,8 +5,8 @@ from typing import Any, List, Optional
 
 import torch
 
-from vllm.executor.distributed_hpu_executor import (  
-    DistributedHPUExecutor, DistributedHPUExecutorAsync)  
+from vllm.executor.distributed_gpu_executor import (# yapf: disable
+    DistributedGPUExecutor, DistributedGPUExecutorAsync)
 from vllm.executor.hpu_executor import create_worker  
 from vllm.executor.multiproc_worker_utils import (ProcessWorkerWrapper,
                                                   ResultHandler, WorkerMonitor)
@@ -25,7 +25,7 @@ if HAS_TRITON:
 logger = init_logger(__name__)
 
 
-class MultiprocessingHPUExecutor(DistributedHPUExecutor):  
+class MultiprocessingHPUExecutor(DistributedGPUExecutor):  
     """Python multiprocessing-based multi-HPU executor"""
 
     uses_ray: bool = False
@@ -191,7 +191,7 @@ class MultiprocessingHPUExecutor(DistributedHPUExecutor):
 
 
 class MultiprocessingHPUExecutorAsync(MultiprocessingHPUExecutor,
-                                      DistributedHPUExecutorAsync):  
+                                      DistributedGPUExecutorAsync):  
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
